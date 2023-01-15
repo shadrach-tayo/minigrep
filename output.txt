@@ -1,0 +1,12 @@
+Arg ignore case: true
+env ignore case: false
+Config true
+[search_case_insensitive_Results]: ["Are you nobody, too?", "How dreary to be somebody!", "To tell your name the livelong day", "To an admiring bog!"]
+Are you nobody, too?
+
+How dreary to be somebody!
+
+To tell your name the livelong day
+
+To an admiring bog!
+
