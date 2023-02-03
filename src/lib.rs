@@ -2,15 +2,16 @@ use std::{env, error::Error, fs};
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
-    // .expect("Couldn't read the file");
-    // println!("With text:\n{contents}");
-    println!("Config {:?}", config.ignore_case);
+    println!("Ignore case {:?}", config.ignore_case);
     let results = if config.ignore_case {
         search_case_insensitive(&config.query, &contents)
     } else {
         search(&config.query, &contents)
     };
 
+    println!("[search_Results]: {:?}", results);
+
+    println!("\n");
     for line in results {
         println!("{line}\n");
     }
@@ -25,21 +26,36 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn build(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("Not enough arguments");
-        }
-        let query = args[1].clone();
-        let file_path = args[2].clone();
-        let arg_ignore_case = if args.len() > 3 && args[3].contains("--ignore_case") {
-          true
-        } else {
-          env::var("IGNORE_CASE").is_ok()
+    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
+        // if args.len() < 3 {
+        //     return Err("Not enough arguments");
+        // }
+        args.next();
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get any query string"),
         };
-        println!("Arg ignore case: {arg_ignore_case}");
-        
-        let env_ignore_case = env::var("IGNORE_CASE").is_ok();
-        println!("env ignore case: {env_ignore_case}");
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get any file path"),
+        };
+
+        let arg_ignore_case = match args.next() {
+            Some(_) => true,
+            None => env::var("IGNORE_CASE").is_ok(),
+        };
+
+        // let arg_ignore_case = if args.len() > 3 && args[3].contains("--ignore_case") {
+        //   true
+        // } else {
+        //   env::var("IGNORE_CASE").is_ok()
+        // };
+
+        // println!("Arg ignore case: {arg_ignore_case}");
+
+        // let env_ignore_case = env::var("IGNORE_CASE").is_ok();
+        // println!("env ignore case: {env_ignore_case}");
         Ok(Self {
             query,
             file_path,
@@ -49,25 +65,17 @@ impl Config {
 }
 
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut result: Vec<&str> = Vec::new();
-    for line in contents.lines() {
-        if line.contains(query) {
-            result.push(line);
-        }
-    }
-    result
+    contents
+        .lines()
+        .filter(|line| line.contains(query))
+        .collect()
 }
 
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut result: Vec<&str> = Vec::new();
-    let query = query.to_lowercase();
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query) {
-            result.push(line);
-        }
-    }
-    println!("[search_case_insensitive_Results]: {:?}", result);
-    result
+    contents
+        .lines()
+        .filter(|line| line.to_lowercase().contains(&query.to_lowercase()))
+        .collect()
 }
 
 #[cfg(test)]
