@@ -1,6 +1,6 @@
 use std::{env, process};
 
-use minigrep::Config;
+use minigrep_tay::Config;
 
 
 fn main() {
@@ -8,7 +8,7 @@ fn main() {
         println!("Problem parsing arguments: {err}");
         process::exit(1);
     });
-    if let Err(e) =  minigrep::run(config) {
+    if let Err(e) =  minigrep_tay::run(config) {
         println!("Application error: {e}");
         process::exit(1);
     }

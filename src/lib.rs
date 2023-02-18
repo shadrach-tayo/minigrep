@@ -13,7 +13,7 @@ use std::{env, error::Error, fs};
 /// let config = minigrep::Config { query: "you".to_string(), ignore_case: true, file_path: "./poems.txt".to_string() };
 /// let result = minigrep::run(config);
 /// ```
-///
+
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
     println!("Ignore case {:?}", config.ignore_case);
