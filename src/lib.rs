@@ -1,5 +1,18 @@
+//! # Minigrep package
+//! This is a mini version of the popular linux command line tool ``grep``
+//! 
+//! Have fun 🎉
+//! 
+
 use std::{env, error::Error, fs};
 
+/// Takes an arg of type Config and runs the search function based on the config values
+/// 
+/// # Example
+/// let config = minigrep::Config { query: "you", ignore_case: true, file_path: "./poems.txt" };
+/// let result = minigrep::run(config);
+/// assert_eq!(result, Ok(()));
+/// 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
     println!("Ignore case {:?}", config.ignore_case);
