@@ -1,5 +1,5 @@
 [package]
-name = "minigrep"
+name = "minigrep_tay"
 version = "0.1.0"
 edition = "2021"
 description = "A mini version of the grep command line tool."
